@@ -1,0 +1,12 @@
+#!/bin/env ruby
+require 'date'
+require_relative '../lib/done_log.rb'
+
+case ARGV[0]
+when nil
+  DoneLog.new(Date.today).log
+when /\A-[\d+]\z/
+  DoneLog.new(Date.today + ARGV[0].to_i).log
+else
+  DoneLog.new(Date.parse(ARGV[0])).log
+end
