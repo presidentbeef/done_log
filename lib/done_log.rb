@@ -85,11 +85,22 @@ class DoneLog
           {}
         end
       else
-        File.open(config_file, "w") do |f|
-          f.puts(JSON.pretty_generate(default_config))
+        FileUtils.mkdir_p(default_dir)
+
+        config = default_config
+        puts "What Git URL (e.g. git@github.com:user_name/example_log.git) should we use?\nLeave blank to skip."
+        print "? "
+        url = gets.strip
+
+        unless url.empty?
+          config[:git_repo] = url
         end
 
-        default_config
+        File.open(config_file, "w") do |f|
+          f.puts(JSON.pretty_generate(config))
+        end
+
+        config
       end
     end
 
