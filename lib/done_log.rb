@@ -11,7 +11,9 @@ class DoneLog
   def initialize date, dir = DoneLog.default_log_dir
     @date = date
     @dir = dir
-    @log_file = File.join(dir, date_string)
+    year = date.year.to_s
+    month = date.month.to_s.rjust(2, "0")
+    @log_file = File.join(dir, year, month, date_string)
     @git = GitRepo.new(DoneLog.config[:git_repo], dir, log_file)
   end
 
@@ -27,7 +29,7 @@ class DoneLog
   end
 
   def ensure_directory
-    FileUtils.mkdir_p(dir)
+    FileUtils.mkdir_p(File.dirname(log_file))
     git.init
   end
 
