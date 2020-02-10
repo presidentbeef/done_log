@@ -12,15 +12,9 @@ class GitRepo
   end
 
   def add
-    run "git add #{log_file}"
-  end
-
-  def add_remote
-    return unless git_url
-    return if has_remote?
-
-    run "git remote add origin #{git_url.inspect}"
-    run "git push --set-upstream origin master"
+    unless File.empty? log_file
+      run "git add #{log_file}"
+    end
   end
 
   def commit
@@ -36,7 +30,11 @@ class GitRepo
   end
 
   def init
-    run "git init #{log_dir} -q"
+    if git_url and not Dir.exist? log_dir
+      run "git clone -q #{git_url} #{log_dir}"
+    else
+      run "git init -q #{log_dir}"
+    end
   end
 
   def pull
@@ -50,7 +48,6 @@ class GitRepo
 
   def push
     return unless git_url
-    add_remote
     return unless has_remote?
 
     unless run 'git push'
