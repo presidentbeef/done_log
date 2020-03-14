@@ -2,11 +2,13 @@
 require 'date'
 require_relative '../lib/done_log.rb'
 
-case ARGV[0]
-when nil
-  DoneLog.new(Date.today).log
-when /\A-[\d+]\z/
-  DoneLog.new(Date.today + ARGV[0].to_i).log
+options = DoneLogOptions.parse!(ARGV)
+
+case options[:action]
+when :edit
+  DoneLog.edit_logs(options[:time_period])
+when :show
+  DoneLog.show_logs(options[:time_period])
 else
-  DoneLog.new(Date.parse(ARGV[0])).log
+  abort "Need to either --edit or --show logs"
 end

@@ -4,6 +4,7 @@ require 'date'
 require 'fileutils'
 require 'json'
 require_relative 'done_log/git_repo'
+require_relative 'done_log/options'
 
 class DoneLog
   attr_reader :date, :dir, :git, :log_file
@@ -28,6 +29,23 @@ class DoneLog
     git.push
   end
 
+  def show pull = true
+    ensure_directory
+    git.pull if pull
+
+    if File.exist? log_file
+      puts File.read(log_file)
+      puts
+    else
+      puts <<~LOG
+      #{date_string}
+
+      [No log]
+
+      LOG
+    end
+  end
+
   def ensure_directory
     FileUtils.mkdir_p(File.dirname(log_file))
     git.init
@@ -47,10 +65,14 @@ class DoneLog
   end
 
   def strip_log
-    log = File.read(log_file).strip!
+    log = File.read(log_file).strip
 
-    File.open(log_file, "w") do |f|
-      f.puts log
+    if log.empty?
+      File.delete(log_file)
+    else
+      File.open(log_file, "w") do |f|
+        f.puts log
+      end
     end
   end
 
@@ -114,6 +136,28 @@ class DoneLog
 
     def default_config_file
       File.join(default_dir, "config")
+    end
+
+    def edit_logs time_period
+      if time_period.is_a? Date
+        DoneLog.new(time_period).log
+      else
+        time_period.each do |d|
+          DoneLog.new(d).log
+        end
+      end
+    end
+
+    def show_logs time_period
+      if time_period.is_a? Date
+        DoneLog.new(time_period).show
+      else
+        pull = true
+        time_period.each do |d|
+          DoneLog.new(d).show(pull)
+          pull = false
+        end
+      end
     end
   end
 end
