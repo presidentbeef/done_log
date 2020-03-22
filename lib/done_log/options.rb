@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'optparse/date'
 
 class DoneLogOptions
   def self.parse!(args)
@@ -32,12 +33,16 @@ class DoneLogOptions
         options[:action] = :show
       end
 
+      opts.on "-d", "--date [DATE]", Date, "Select date" do |date|
+        options[:time_period] = date
+      end
+
       opts.on "--sprint", "Last 14 days" do
         options[:time_period] = (Date.today - 14)..Date.today
         options[:action] ||= :show
       end
 
-      opts.on_tail("-h", "--help", "Show this message") do
+      opts.on_tail "-h", "--help", "Show this message" do
         puts opts
         exit
       end
