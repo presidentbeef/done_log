@@ -5,6 +5,7 @@ require 'fileutils'
 require 'json'
 require_relative 'done_log/git_repo'
 require_relative 'done_log/options'
+require_relative 'done_log/ansi_colors'
 
 class DoneLog
   attr_reader :date, :dir, :git, :log_file
@@ -15,7 +16,10 @@ class DoneLog
     year = date.year.to_s
     month = date.month.to_s.rjust(2, "0")
     @log_file = File.join(dir, year, month, date_string)
-    @git = GitRepo.new(DoneLog.config[:git_repo], dir, log_file)
+
+    config = DoneLog.config
+    @git = GitRepo.new(config[:git_repo], dir, log_file)
+    @color = config[:date_color]
   end
 
   def log
@@ -34,11 +38,17 @@ class DoneLog
     git.pull if pull
 
     if File.exist? log_file
-      puts File.read(log_file)
+      log = File.read(log_file)
+      if $stdout.tty?
+        puts log.sub(/^(\d{4}-\d{2}-\d{2})$/) { |date| ANSIColors.colorize(date, @color) }
+      else
+        puts log
+      end
+
       puts
     else
       puts <<~LOG
-      #{date_string}
+      #{ANSIColors.colorize(date_string, @color)}
 
       [No log]
 
@@ -130,7 +140,8 @@ class DoneLog
 
     def default_config
       {
-        git_repo: nil
+        git_repo: nil,
+        date_color: :cyan
       }
     end
 
