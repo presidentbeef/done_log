@@ -2,6 +2,7 @@
 
 require 'optparse'
 require 'optparse/date'
+require_relative 'ansi_colors'
 
 class DoneLogOptions
   def self.parse!(args)
@@ -40,6 +41,10 @@ class DoneLogOptions
       opts.on "--sprint", "Last 14 days" do
         options[:time_period] = (Date.today - 14)..Date.today
         options[:action] ||= :show
+      end
+
+      opts.on "-c", "--color-date COLOR", ANSIColors.colors, "Set color for dates" do |color|
+        options[:date_color] = color.to_sym
       end
 
       opts.on_tail "-h", "--help", "Show this message" do

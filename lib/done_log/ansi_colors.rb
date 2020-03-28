@@ -29,4 +29,8 @@ module ANSIColors
 
     "\e[#{color_code}m#{input}\e[0m"
   end
+
+  def self.colors
+    @colors ||= Colors.keys.concat(Colors.keys.map { |c| "bright_#{c}".to_sym })
+  end
 end

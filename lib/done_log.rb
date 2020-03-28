@@ -10,16 +10,16 @@ require_relative 'done_log/ansi_colors'
 class DoneLog
   attr_reader :date, :dir, :git, :log_file
 
-  def initialize date, dir = DoneLog.default_log_dir
+  def initialize date:, date_color: nil
     @date = date
-    @dir = dir
+    @dir = DoneLog.default_log_dir
     year = date.year.to_s
     month = date.month.to_s.rjust(2, "0")
     @log_file = File.join(dir, year, month, date_string)
 
     config = DoneLog.config
     @git = GitRepo.new(config[:git_repo], dir, log_file)
-    @color = config[:date_color]
+    @date_color = date_color || config[:date_color]
   end
 
   def log
@@ -40,7 +40,7 @@ class DoneLog
     if File.exist? log_file
       log = File.read(log_file)
       if $stdout.tty?
-        puts log.sub(/^(\d{4}-\d{2}-\d{2})$/) { |date| ANSIColors.colorize(date, @color) }
+        puts log.sub(/^(\d{4}-\d{2}-\d{2})$/) { |date| ANSIColors.colorize(date, @date_color) }
       else
         puts log
       end
@@ -48,7 +48,7 @@ class DoneLog
       puts
     else
       puts <<~LOG
-      #{ANSIColors.colorize(date_string, @color)}
+      #{ANSIColors.colorize(date_string, @date_color)}
 
       [No log]
 
@@ -151,21 +151,21 @@ class DoneLog
 
     def edit_logs time_period
       if time_period.is_a? Date
-        DoneLog.new(time_period).log
+        DoneLog.new(date: time_period).log
       else
         time_period.each do |d|
-          DoneLog.new(d).log
+          DoneLog.new(date: d).log
         end
       end
     end
 
-    def show_logs time_period
+    def show_logs time_period, date_color = nil
       if time_period.is_a? Date
-        DoneLog.new(time_period).show
+        DoneLog.new(date: time_period, date_color: date_color).show
       else
         pull = true
         time_period.each do |d|
-          DoneLog.new(d).show(pull)
+          DoneLog.new(date: d, date_color: date_color).show(pull)
           pull = false
         end
       end

@@ -8,7 +8,7 @@ case options[:action]
 when :edit
   DoneLog.edit_logs(options[:time_period])
 when :show
-  DoneLog.show_logs(options[:time_period])
+  DoneLog.show_logs(options[:time_period], options[:date_color])
 else
   abort "Need to either --edit or --show logs"
 end
