@@ -14,6 +14,15 @@ Optionally pushes to a remote Git repository.
 
 ### Installing
 
+This is a Ruby program, so you'll need [a Ruby](https://www.ruby-lang.org/) first.
+
+Via RubyGems:
+
+    gem install done_log
+
+From source:
+
+    git clone https://github.com/presidentbeef/done_log.git
     gem build done_log.gemspec
     gem install done_log*.gem
 
