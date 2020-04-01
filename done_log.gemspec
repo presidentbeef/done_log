@@ -5,6 +5,7 @@ Gem::Specification.new do |s|
 
   s.summary = "Extremely simple daily log."
   s.description = "Manage very simple daily work logs in text files."
+  s.homepage = "https://github.com/presidentbeef/done_log"
 
   s.files = ["bin/done_log", "README.md"] + Dir["lib/**/*"]
   s.executables = ["done_log"]
