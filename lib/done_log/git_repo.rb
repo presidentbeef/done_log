@@ -31,10 +31,12 @@ module Done
     end
 
     def init
-      if git_url and not Dir.exist? log_dir
-        run "git clone -q #{git_url} #{log_dir}"
-      else
-        run "git init -q #{log_dir}"
+      unless Dir.exist? File.join(log_dir, ".git")
+        if git_url
+          run "git clone -q #{git_url} #{log_dir}"
+        else
+          run "git init -q #{log_dir}"
+        end
       end
     end
 

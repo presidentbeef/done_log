@@ -58,8 +58,9 @@ module Done
     end
 
     def ensure_directory
-      FileUtils.mkdir_p(File.dirname(log_file))
+      FileUtils.mkdir_p(dir)
       git.init
+      FileUtils.mkdir_p(File.dirname(log_file))
     end
 
     def create_log
