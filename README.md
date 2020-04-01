@@ -27,7 +27,13 @@ Configuration is read from JSON file `~/.done/config`.
 
 A default configuration file is created automatically.
 
-The only option right now is `git_repo` which can be set to a remote Git repository.
+Options are:
+
+* `git_repo` which can be set to a remote Git repository.
+* `date_color` which sets the color used for dates when viewing logs.
+
+[Possible colors listed here](https://github.com/presidentbeef/done_log/blob/master/lib/done_log/ansi_colors.rb#L4-L12),
+plus they can be prefixed by `bright_`.
 
 ### Running
 
@@ -55,7 +61,7 @@ To enter a log for a specific date, run `done_log -d DATE`.
 
 When editing, `vim` is opened to a new/existing document. When `vim` exits, the log is committed and pushed to the Git repo.
 
-To cancel a new log, delete everything in the file and save.
+To cancel a new log, delete _everything_ in the file and save.
 
 To cancel edits to an existing log, close `vim` without saving.
 
