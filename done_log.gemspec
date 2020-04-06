@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "done_log"
-  s.version = "1.0.0" 
+  s.version = "1.0.1"
   s.authors = ["Justin Collins"]
 
   s.summary = "Extremely simple daily log."
