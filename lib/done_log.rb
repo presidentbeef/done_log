@@ -47,6 +47,13 @@ module Done
         end
 
         puts
+      elsif date.saturday? or date.sunday?
+        puts <<~LOG
+      #{Done::ANSIColors.colorize(date_string, @date_color)}
+
+      [Weekend]
+
+        LOG
       else
         puts <<~LOG
       #{Done::ANSIColors.colorize(date_string, @date_color)}
